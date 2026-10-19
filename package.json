@@ -1,0 +1,17 @@
+{
+  "name": "20-10-tiny",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Trang chúc mừng 20/10 tương tác cùng Tiny",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "dev": "node scripts/server.mjs",
+    "start": "node scripts/server.mjs",
+    "test": "node --test tests/server.test.mjs",
+    "test:browser": "node --test --test-concurrency=1 tests/browser.test.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}

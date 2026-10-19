@@ -1,6 +1,6 @@
 # Tiny — Chúc mừng ngày 20/10
 
-Bản sao giao diện và tương tác từ https://20-10-vuive.kazvndc-edu.workers.dev/, theo yêu cầu của chủ dự án. Giữ câu chuyện Tiny, 13 đoạn lời thoại, hoa, sao, cỏ bốn lá, nhạc, video, máy bay chia sẻ và 9 món quà. Giữ các liên kết sản phẩm và phần ghi công của trang gốc.
+
 
 Ảnh, video, nhạc và phông chữ được lưu trong dự án. Trang không cần gọi website gốc hoặc Google Fonts để hoạt động. Nút chia sẻ sao chép địa chỉ của bản đang chạy, thay vì địa chỉ website gốc.
 

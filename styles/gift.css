@@ -1,0 +1,237 @@
+/* A personal delivery: keep Tiny's night sky and cyan/pink palette. */
+#gift-invitation-title {
+  font-size: clamp(23px, 3.5vw, 46px);
+  line-height: 1.48;
+  margin: 0;
+}
+.share-fuel-words strong {
+  font-size: clamp(18px, 2.1vw, 28px);
+  line-height: 1.35;
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+  -webkit-text-stroke: 0;
+  text-shadow: 0 1px 8px #6b385d;
+}
+.share-fuel-liquid {
+  height: calc((100% - 18px) * var(--gift-charge, .8));
+}
+.gift-flight-banner {
+  position: absolute;
+  right: calc(100% + 26px);
+  bottom: 31%;
+  padding: 9px 14px;
+  border: 1px solid #f1b6d5;
+  border-radius: 4px 14px 14px 4px;
+  background: #20162ee8;
+  color: #ffe0ee;
+  font: 600 clamp(12px, 1.2vw, 16px)/1.4 system-ui, sans-serif;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity .25s;
+  box-shadow: 0 0 22px #f4b5d51a;
+}
+.gift-flight-banner::after {
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  width: 30px;
+  border-top: 1px dashed #b6e8f0;
+}
+.share-takeoff .gift-flight-banner { opacity: 1; }
+#share-aircraft-stand.share-takeoff {
+  animation: giftPlaneDepart var(--gift-flight-time, 2.6s) cubic-bezier(.25,.5,.45,1) forwards;
+}
+.gift-flying .share-propeller { animation: sharePropSpin .085s linear infinite; }
+@keyframes giftPlaneDepart {
+  0% { transform: translate(0,0) rotate(0); opacity: 1; }
+  20% { transform: translate(3vw,-2vh) rotate(-5deg); opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translate(105vw,-62vh) rotate(-12deg); opacity: 0; }
+}
+
+.gift-letter-scene {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: clamp(24px, 5vh, 56px) 20px;
+  padding-top: max(24px, env(safe-area-inset-top));
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  color: #f8edf6;
+  background: #050916;
+  font-family: 'Courier Prime', monospace;
+  text-align: center;
+  opacity: 0;
+  transition: opacity .6s ease;
+  scrollbar-color: #856b91 #080d1d;
+}
+.gift-letter-scene[hidden], .gift-letter-scene [hidden] { display: none; }
+.gift-letter-scene.gift-visible { opacity: 1; }
+.gift-night {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 16% 70%, #14779a1f, transparent 55%),
+    radial-gradient(ellipse at 88% 20%, #b9699d20, transparent 55%),
+    radial-gradient(ellipse at center, #162039 0, #050916 80%);
+}
+.gift-night::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: .4;
+  background-image:
+    radial-gradient(circle, #e1f6ff 0 1px, transparent 1.6px),
+    radial-gradient(circle, #ffd9e9 0 1px, transparent 1.7px);
+  background-size: 137px 151px, 223px 197px;
+  background-position: 16px 29px, 72px 64px;
+}
+.gift-card {
+  position: relative;
+  flex: none;
+  width: min(100%, 660px);
+  margin: auto 0;
+  padding: clamp(28px, 4.5vw, 48px);
+  border: 1px solid #d6bce32b;
+  border-radius: 28px;
+  box-sizing: border-box;
+  background: linear-gradient(150deg, #1e2139e0, #0b1427ed 60%, #271b32c9);
+  box-shadow: 0 25px 100px #0005, 0 0 80px #a084bd0b, inset 0 1px #fff1;
+}
+.gift-envelope-art {
+  display: block;
+  width: min(90%, 300px);
+  margin: 0 auto 18px;
+  overflow: visible;
+  filter: drop-shadow(0 12px 24px #f4b4ce26);
+  animation: giftEnvelopeFloat 4s ease-in-out infinite;
+}
+@keyframes giftEnvelopeFloat {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-9px) rotate(1deg); }
+}
+.gift-envelope-flap {
+  transform-origin: 160px 48px;
+  transition: transform .55s ease;
+}
+.gift-envelope-seal { transition: opacity .15s; }
+.gift-envelope-paper { transition: transform .6s ease; }
+.gift-opening .gift-envelope-art { animation: none; }
+.gift-opening .gift-envelope-flap { transform: rotateX(170deg); }
+.gift-opening .gift-envelope-seal { opacity: 0; }
+.gift-opening .gift-envelope-paper { transform: translateY(-36px); }
+.gift-title {
+  margin: 0 0 18px;
+  color: #ffe2ee;
+  font-size: clamp(30px, 4vw, 42px);
+  font-weight: 400;
+  text-shadow: 0 0 28px #f8c4dc24;
+}
+.gift-envelope-message {
+  margin: 0 auto 30px;
+  font: 400 clamp(16px, 2vw, 19px)/1.85 system-ui, sans-serif;
+  color: #d2cfdf;
+  text-wrap: pretty;
+}
+.gift-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  max-width: 100%;
+  padding: 13px 30px;
+  border: 1px solid #f1c3d8;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #f7c5d8, #e1bcde);
+  box-shadow: 0 5px 28px #de9dbb1c;
+  color: #38243c;
+  font: 650 16px/1.4 system-ui, sans-serif;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform .2s, box-shadow .2s;
+}
+.gift-button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 30px #eab1cc33; }
+.gift-button:focus-visible { outline: 3px solid #a0eaf2; outline-offset: 5px; }
+.gift-button:disabled { cursor: default; }
+.gift-letter-content, .gift-delivered-view { animation: giftLetterReveal .7s ease both; }
+.gift-letter-content:focus, .gift-delivered-view:focus { outline: none; }
+@keyframes giftLetterReveal {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.gift-letter-heart {
+  display: block;
+  margin: 0 auto 14px;
+  font: 400 40px/1 system-ui, sans-serif;
+  color: #e8b5d1;
+}
+.gift-letter-body {
+  margin: 0;
+  color: #e3dce9;
+  font: 400 clamp(17px, 2vw, 19px)/1.95 system-ui, sans-serif;
+  text-align: left;
+  text-wrap: pretty;
+  user-select: text;
+}
+.gift-letter-divider { position: relative; margin: 28px auto 24px; width: 65%; color: #e2b9d0; }
+.gift-letter-divider::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, #d9bdd540, transparent); }
+.gift-letter-divider span { position: relative; padding: 0 12px; background: #10172a; }
+.gift-ending {
+  margin: 0 0 28px;
+  font-size: clamp(17px, 2.3vw, 21px);
+  line-height: 1.8;
+  color: #bcd9e5;
+  text-wrap: pretty;
+}
+.gift-ending strong { display: inline-block; margin-top: 7px; color: #ffd5e7; font-weight: 400; }
+.gift-keepsake {
+  position: relative;
+  width: 118px;
+  height: 100px;
+  margin: 20px auto 34px;
+  border: 1px solid #c6abc680;
+  border-radius: 8px 8px 48px 48px;
+  background: linear-gradient(140deg, #564164, #242239);
+  box-shadow: 0 0 50px #eaa3cb1c;
+}
+.gift-keepsake::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 16px;
+  right: 16px;
+  height: 56px;
+  border: 1px solid #fce2ee;
+  border-radius: 5px;
+  background: linear-gradient(150deg, #f6d2e0, #caa0c4);
+  transform: rotate(-7deg);
+}
+.gift-keepsake span { position: relative; z-index: 1; display: block; padding-top: 31px; color: #ffdeed; font: 35px/1 system-ui, sans-serif; }
+.gift-delivered-message { margin: 0; font-size: clamp(22px, 3.5vw, 30px); line-height: 1.65; color: #ffe3ef; text-wrap: balance; }
+@media (max-width: 650px) {
+  #gift-invitation-title { font-size: clamp(20px, 5vw, 29px); }
+  .share-fuel-words strong { font-size: clamp(16px, 4.4vw, 22px); }
+  .gift-letter-scene { padding-left: 14px; padding-right: 14px; }
+  .gift-card { padding: 28px 24px; border-radius: 22px; }
+  .gift-envelope-art { width: min(90%, 240px); }
+  .gift-envelope-message { font-size: 16px; }
+  .gift-flight-banner { right: calc(100% + 16px); bottom: 34%; padding: 7px 9px; font-size: 12px; }
+  .gift-flight-banner::after { width: 18px; }
+}
+@media (max-height: 500px) and (min-width: 651px) {
+  #gift-invitation-title { font-size: 22px; line-height: 1.3; }
+  .gift-envelope-art { width: 190px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gift-envelope-art, .gift-letter-content, .gift-delivered-view { animation: none; }
+  .gift-letter-scene, .gift-envelope-flap, .gift-envelope-paper, .gift-button { transition: none; }
+  #share-aircraft-stand.share-takeoff { animation: none; }
+  .gift-flying .share-propeller { animation: none; }
+}

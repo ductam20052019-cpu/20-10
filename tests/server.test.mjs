@@ -17,7 +17,7 @@ test('serves the story and its local scripts and stylesheet', async () => {
   const html = await page.text();
   assert.match(html, /này cậu gì ơi/);
   assert.match(html, /id="share-fuel-button"/);
-  assert.match(html, /id="tiny-shop-scene"/);
+  assert.match(html, /id="gift-letter-scene"/);
   for (const [, path] of html.matchAll(/(?:src|href)="((?:scripts|styles|assets)\/[^"#]+)"/g)) {
     const asset = await fetch(`${base}/${path}`, { method: 'HEAD' });
     assert.equal(asset.status, 200, path);

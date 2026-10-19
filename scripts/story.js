@@ -2259,55 +2259,17 @@ const SPRITES = [taoSprite(1.02, 140), taoSprite(.96, 136), taoSprite(1.08, 145)
         }
 
 
-        // ---- FINAL SHARE FLIGHT: dedicated scene after the wink/question scene ----
-        // Share this installation, including a subdirectory deployment.
-        const SHARE_FLIGHT_URL = new URL('.', window.location.href).href;
+        // ---- PERSONAL GIFT FLIGHT: charge courage, then deliver a private letter. ----
         const shareFlightScene = document.getElementById('share-flight-scene');
         const shareFlightDevice = document.getElementById('share-flight-device');
         const shareFuelButton = document.getElementById('share-fuel-button');
         const shareFuelLiquid = document.getElementById('share-fuel-liquid');
-        const shareFuelWords = shareFuelButton.querySelector('.share-fuel-words strong');
         const shareFuelMeter = document.getElementById('share-fuel-meter');
-        // The level of liquid physically erases the visible text from TOP to BOTTOM.
-        function syncFuelEatenText() {
-            if (!shareFuelWords) return;
-            const surfaceY = shareFuelLiquid.getBoundingClientRect().top;
-            const word = shareFuelWords.getBoundingClientRect();
-            if (!word.height) return;
-            const eaten = Math.max(0,Math.min(100,100*(surfaceY-word.top)/word.height));
-            shareFuelWords.style.clipPath = 'inset('+eaten.toFixed(2)+'% 0 0 0)';
-        }
         const shareAirplane = document.getElementById('share-aircraft');
         const shareAirplaneStand = document.getElementById('share-aircraft-stand');
         let sharePlaneReady = false;
         let sharePlaneLaunched = false;
         const shareFlightStatus = document.getElementById('share-flight-status');
-        const shareManualLink = document.getElementById('share-copy-manual');
-        shareManualLink.href = SHARE_FLIGHT_URL;
-        shareManualLink.textContent = SHARE_FLIGHT_URL;
-        const shareCopyToast = document.createElement('div');
-        shareCopyToast.className = 'tiny-copy-toast';
-        shareCopyToast.setAttribute('role','status');
-        shareCopyToast.setAttribute('aria-live','polite');
-        document.body.appendChild(shareCopyToast);
-        let shareToastTimer = null;
-        function notifyShareCopy(success) {
-            clearTimeout(shareToastTimer);
-            shareCopyToast.replaceChildren();
-            shareCopyToast.classList.toggle('copy-failed',!success);
-            if (success) {
-                shareCopyToast.textContent='✓ Đã sao chép liên kết';
-            } else {
-                shareCopyToast.append('Không thể tự sao chép. Chạm giữ liên kết để sao chép:');
-                const link=document.createElement('a');
-                link.href=SHARE_FLIGHT_URL;
-                link.textContent=SHARE_FLIGHT_URL;
-                link.target='_blank';link.rel='noopener noreferrer';
-                shareCopyToast.appendChild(link);
-            }
-            shareCopyToast.classList.add('show');
-            shareToastTimer=setTimeout(()=>shareCopyToast.classList.remove('show'),success?4600:11000);
-        }
         const sharePipePath = document.getElementById('share-hose-flow-path');
         const sharePipeDrops = document.getElementById('share-flow-droplets');
         let shareFuelStarted = false;
@@ -2465,8 +2427,6 @@ const SPRITES = [taoSprite(1.02, 140), taoSprite(.96, 136), taoSprite(1.08, 145)
             // Forced style/layout flush here blocked mobile transitions for an entire frame.
             if (!TINY_PERF.mobile) void shareFlightScene.offsetWidth;
             shareFlightScene.classList.add('share-visible');
-            if (TINY_PERF.mobile) afterPaintIfCurrent('share',syncFuelEatenText,85);
-            else requestAnimationFrame(syncFuelEatenText);
             clearTimeout(shareTinyTimeout);
             clearTimeout(shareTinyBlinkTimeout);
             shareTiny.classList.remove('share-tiny-blink','share-tiny-cheer','tiny-caret-restored','share-tiny-thank-glow');
@@ -2476,7 +2436,7 @@ const SPRITES = [taoSprite(1.02, 140), taoSprite(.96, 136), taoSprite(1.08, 145)
             });
             // Khi sang cảnh máy bay, hai mắt giữ trạng thái mở và nhìn thẳng.
             // Đợi chuyển động di chuyển (1050ms) hoàn tất, nghỉ ổn định thêm 1200ms
-            // rồi mới liếc xuống nút Đồng ý lần đầu.
+            // rồi mới liếc xuống nút Nhận quà lần đầu.
             bringRealTinyToShare();
             shareTiny.classList.remove('share-tiny-look');
             shareTinyTimeout = setTimeout(() => {
@@ -2646,13 +2606,14 @@ const SPRITES = [taoSprite(1.02, 140), taoSprite(.96, 136), taoSprite(1.08, 145)
              setTimeout(convert,FLY_MS+180);
         }
 
-        // Khi năng lượng bơm xong, máy bay tự bay ngay và hai mắt Tiny
-        // bắt đầu di chuyển sang cảnh cuối ĐỒNG THỜI. Máy bay được đưa ra
-        // một lớp nổi (giữ nguyên SVG gốc) để cảnh cũ mờ đi mà nó không bị ẩn.
+        // The aircraft and its destination banner move together. Deliver the letter
+        // only after landing; a timer keeps delivery reachable without CSS animation.
         function launchSharePlane() {
             if (!sharePlaneReady || sharePlaneLaunched || activeWish !== 'share') return;
             sharePlaneLaunched = true;
             sharePlaneReady = false;
+            const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const flightDuration = reduceMotion ? 180 : 2600;
             shareAirplaneStand.classList.remove('share-ready');
             // Chốt toạ độ trước khi chuyển lớp; vẫn là chính chiếc máy bay SVG này.
             const startRect = shareAirplaneStand.getBoundingClientRect();
@@ -2663,45 +2624,30 @@ const SPRITES = [taoSprite(1.02, 140), taoSprite(.96, 136), taoSprite(1.08, 145)
                 pointerEvents: 'none'
             });
             document.body.appendChild(shareAirplaneStand);
+            shareAirplaneStand.style.setProperty('--gift-flight-time',flightDuration+'ms');
             shareAirplaneStand.classList.add('share-takeoff');
-            shareFlightStatus.textContent = 'Máy bay đang cất cánh ✈';
-            // Chốt layout lớp máy bay, rồi khởi chạy cất cánh, mờ nền và
-            // FLIP đôi mắt cùng một lượt ngay khi năng lượng đầy (không đợi frame sau).
-            shareAirplane.classList.add('share-flying');
-            if (TINY_PERF.mobile) requestAnimationFrame(()=>beginTinyRealityScene());
-            else beginTinyRealityScene();
+            shareFlightStatus.textContent = 'Điểm đến: chỗ cậu ✈️';
+            shareAirplane.classList.add('gift-flying');
             let didFinish = false;
             const onDepartEnd = event => {
-                if (event.target === shareAirplane && event.animationName === 'sharePlaneDepart') finish();
+                if (event.target === shareAirplaneStand && event.animationName === 'giftPlaneDepart') finish();
             };
             const finish = () => {
                 if (didFinish) return;
                 didFinish = true;
-                shareAirplane.removeEventListener('animationend', onDepartEnd);
+                shareAirplaneStand.removeEventListener('animationend', onDepartEnd);
                 shareAirplaneStand.remove();
+                activeWish = 'letter';
+                clearTimeout(shareTinyTimeout);
+                clearTimeout(shareTinyBlinkTimeout);
+                shareFlightScene.classList.add('reality-leaving');
+                shareFlightScene.classList.remove('share-visible');
+                shareFlightScene.setAttribute('aria-hidden','true');
+                shareFlightScene.inert = true;
+                window.dispatchEvent(new Event('tiny:gift-arrived'));
             };
-            shareAirplane.addEventListener('animationend', onDepartEnd);
-            setTimeout(finish, 1660); // fallback khi trình duyệt tắt animation
-        }
-        // execCommand is a fallback for local file previews / browsers without Clipboard API.
-        function fallbackCopyShareUrl() {
-            const field = document.createElement('textarea');
-            field.value = SHARE_FLIGHT_URL;
-            field.setAttribute('readonly','');
-            field.style.cssText = 'position:fixed;left:-200vw;top:0;opacity:0;';
-            document.body.appendChild(field);
-            field.focus();field.select();field.setSelectionRange(0,field.value.length);
-            let ok = false;
-            try { ok = document.execCommand('copy'); } catch (_) {}
-            field.remove();
-            return ok;
-        }
-        async function copyShareUrl() {
-            if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
-                try { await navigator.clipboard.writeText(SHARE_FLIGHT_URL); return true; }
-                catch (_) { return fallbackCopyShareUrl(); }
-            }
-            return fallbackCopyShareUrl();
+            shareAirplaneStand.addEventListener('animationend', onDepartEnd);
+            setTimeout(finish, flightDuration + 180);
         }
         shareFuelButton.addEventListener('click', function (event) {
             event.stopPropagation();
@@ -2712,38 +2658,31 @@ const SPRITES = [taoSprite(1.02, 140), taoSprite(.96, 136), taoSprite(1.08, 145)
             clearTimeout(shareTinyBlinkTimeout);
             shareTiny.classList.remove('share-tiny-look','share-tiny-blink','share-tiny-cheer');
             // Cảnh máy bay: giữ đôi mắt cyan bình thường, KHÔNG tạo phản sáng long lanh.
-            // Biểu cảm ở đây chỉ chuyển từ mắt thường sang ^^; long lanh để dành cảnh cuối.
+            // Mắt mỉm cười khi cậu đồng ý nhận món quà.
             shareTiny.classList.remove('share-tiny-thank-glow');
             matElements.forEach(eye => {
                 eye.classList.remove('tiny-actual-morph');
                 eye.querySelectorAll('.tiny-morph-svg').forEach(svg => svg.remove());
             });
-            // Crossfade 2 lớp chữ có sẵn; không sửa innerHTML nên không giật bố cục.
             shareFlightScene.classList.add('share-thank-you');
-            const thanks = shareFlightScene.querySelector('.share-heading-thanks');
-            const original = shareFlightScene.querySelector('.share-heading-original');
-            if(thanks)thanks.setAttribute('aria-hidden','false');
-            if(original)original.setAttribute('aria-hidden','true');
-            // Copy is initiated INSIDE the click event: browser user-activation is preserved.
-            const clipboardResult = copyShareUrl();
-            let copySucceeded = null;
             shareFuelButton.disabled = true;
-            shareFlightStatus.textContent = 'Đang bơm nhiên liệu...';
+            shareFuelButton.setAttribute('aria-busy','true');
+            shareFlightStatus.textContent = 'Đang nạp thêm một chút can đảm…';
             shareFlightDevice.classList.add('share-flight-scene-pumping');
             sharePipeDrops.setAttribute('opacity','1');
             const drops = [...sharePipeDrops.querySelectorAll('circle')];
             let length = 0;
             try { length = sharePipePath.getTotalLength(); } catch (_) {}
-            const duration = 1800;
+            const duration = 2200;
             const startTime = performance.now();
             const easing = t => t*t*(3-2*t);
             const animateFuel = now => {
                 if (activeWish !== 'share') return;
                 const t = Math.max(0,Math.min(1,(now-startTime)/duration));
-                const pct = 80 - 75 * easing(t);
-                shareFuelLiquid.style.setProperty('--fuel-remaining',pct.toFixed(1)+'%');
+                const pct = 80 + 20 * easing(t);
+                shareFuelLiquid.style.setProperty('--gift-charge',(pct/100).toFixed(4));
                 shareFuelMeter.textContent = Math.round(pct)+'%';
-                syncFuelEatenText();
+                shareFuelMeter.setAttribute('aria-valuenow',String(Math.round(pct)));
                 if(length) {
                     drops.forEach((dot,i) => {
                         const phase = ((now-startTime)/430 + i/3)%1;
@@ -2755,21 +2694,13 @@ const SPRITES = [taoSprite(1.02, 140), taoSprite(.96, 136), taoSprite(1.08, 145)
                 else {
                     sharePipeDrops.setAttribute('opacity','0');
                     shareFlightDevice.classList.remove('share-flight-scene-pumping');
-                    // Nạp xong -> tự cất cánh, KHÔNG cần click vào máy bay lần hai.
+                    shareFuelButton.setAttribute('aria-busy','false');
                     sharePlaneReady=true;
-                    shareFlightStatus.textContent = 'Đã nạp đầy năng lượng! ✈';
-                    launchSharePlane();
+                    // Hold 100% briefly so the full battery is visible before takeoff.
+                    setTimeout(launchSharePlane,350);
                 }
             };
             requestAnimationFrame(animateFuel);
-            clipboardResult.then(ok => {
-                copySucceeded = ok;
-                notifyShareCopy(ok); // Hiện “Đã sao chép liên kết” khi copy thực sự thành công.
-                if (!ok) {
-                    shareManualLink.style.display = 'block';
-                    shareFlightStatus.textContent='Trình duyệt chặn sao chép tự động.';
-                }
-            });
         });
 
         // Cả PC và điện thoại: click/chạm vào nền để chuyển cảnh.

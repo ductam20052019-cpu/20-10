@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <title>Sự thức giấc của Tiny - Ngày 20/10</title>
     <link rel="stylesheet" href="styles/site.css">
+    <link rel="stylesheet" href="styles/gift.css">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
 
 <!-- Tiny V13: moonless Beauty + light luck-to-question transition; no changes to rover moon -->
@@ -311,20 +312,20 @@
       <span class="v13-twinkle">✦</span><span class="v13-twinkle">✧</span><span class="v13-twinkle">✦</span>
     </div>
 
-    <!-- Scene after "Liệu cậu có thể?": animated fuel-button and departing aircraft. -->
-    <section id="share-flight-scene" aria-hidden="true" aria-label="Lời nhờ chia sẻ trang web">
+    <!-- Một món quà riêng: nạp can đảm, cất cánh, rồi giao phong thư. -->
+    <section id="share-flight-scene" aria-hidden="true" aria-labelledby="gift-invitation-title">
       <header class="share-flight-heading">
-        <h2 class="share-heading-crossfade"><span class="share-heading-original">giúp tớ chia sẻ trang web này<br><span class="share-soft">tới mọi người được không?</span></span><span class="share-heading-thanks" aria-hidden="true">cảm ơn cậu nhiều</span></h2>
+        <h2 id="gift-invitation-title">Có một món quà nhỏ<br><span class="share-soft">đang trên đường đến với cậu.</span><br>Cậu nhận giúp tớ nhé?</h2>
       </header>
       <!-- Đôi mắt THẬT của Tiny ở cảnh trước sẽ được chuyển vào đây, không tạo cặp mắt mới. -->
       <div id="share-tiny" class="share-tiny" aria-hidden="true"></div>
       <div id="share-flight-device" class="share-flight-device">
         <div class="share-flight-ground"></div>
-        <button type="button" id="share-fuel-button" class="share-fuel-button" aria-label="Đồng ý, sao chép liên kết và tiếp nhiên liệu cho máy bay">
+        <button type="button" id="share-fuel-button" class="share-fuel-button" aria-label="Nhận quà 💌">
           <span id="share-fuel-liquid" class="share-fuel-liquid"></span>
           <span class="share-fuel-sheen"></span>
-          <span class="share-fuel-meter" id="share-fuel-meter">80%</span>
-          <span class="share-fuel-words"><strong>Đồng ý</strong></span>
+          <span class="share-fuel-meter" id="share-fuel-meter" role="progressbar" aria-label="Can đảm gửi quà" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80">80%</span>
+          <span class="share-fuel-words"><strong>Nhận quà 💌</strong></span>
         </button>
         <div class="share-fuel-nozzle" aria-hidden="true"></div>
         <svg class="share-fuel-hose" viewBox="0 0 450 115" preserveAspectRatio="none" aria-hidden="true">
@@ -336,6 +337,7 @@
           </g>
         </svg>
         <div id="share-aircraft-stand" class="share-aircraft-stand" role="img" aria-label="Máy bay tự động cất cánh sau khi tiếp nhiên liệu">
+          <span class="gift-flight-banner" aria-hidden="true">Điểm đến: chỗ cậu ✈️</span>
           <svg id="share-aircraft" class="share-aircraft" viewBox="0 0 340 200" aria-hidden="true">
             <defs>
               <linearGradient id="share-metal" x1="0" y1="0" x2=".8" y2="1">
@@ -372,7 +374,54 @@
         </div>
       </div>
       <p id="share-flight-status" class="share-flight-status" aria-live="polite"></p>
-      <a id="share-copy-manual" href="./" target="_blank" rel="noopener noreferrer">Liên kết trang này</a>
+    </section>
+
+    <section id="gift-letter-scene" class="gift-letter-scene" aria-label="Món quà dành riêng cho cậu" aria-hidden="true" hidden>
+      <div class="gift-night" aria-hidden="true"></div>
+      <div class="gift-card">
+        <div id="gift-envelope-view">
+          <svg class="gift-envelope-art" viewBox="0 0 320 220" aria-hidden="true">
+            <defs>
+              <linearGradient id="gift-envelope-gradient" x1="0" y1="0" x2="1" y2="1">
+                <stop stop-color="#ffd3df"/><stop offset="1" stop-color="#bc93bc"/>
+              </linearGradient>
+              <linearGradient id="gift-envelope-front" x1="0" y1="0" x2="0" y2="1">
+                <stop stop-color="#fce1e9"/><stop offset="1" stop-color="#d9a5c8"/>
+              </linearGradient>
+            </defs>
+            <rect x="20" y="48" width="280" height="155" rx="12" fill="url(#gift-envelope-gradient)"/>
+            <g class="gift-envelope-paper">
+              <rect x="42" y="57" width="236" height="125" rx="5" fill="#fff4ec"/>
+              <path d="M77 86H225M77 104H242M77 122H198" stroke="#c7a2b3" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+            </g>
+            <path d="M20 61L160 140L300 61V191Q300 203 288 203H32Q20 203 20 191Z" fill="url(#gift-envelope-front)"/>
+            <path d="M24 199L119 130M296 199L201 130" fill="none" stroke="#bc8da8" stroke-width="1.5" opacity=".6"/>
+            <path class="gift-envelope-flap" d="M20 59Q20 48 32 48H288Q300 48 300 59L171 142Q160 149 149 142Z" fill="#f8c5d8" stroke="#ffe5ec" stroke-width="1.5"/>
+            <g class="gift-envelope-seal">
+              <circle cx="160" cy="133" r="21" fill="#af628a" stroke="#ffe6ef" stroke-width="1.5"/>
+              <path d="M160 143C142 132 150 119 160 128C170 119 178 132 160 143Z" fill="#fff1f3"/>
+            </g>
+            <path d="M16 22V34M10 28H22M290 14V24M285 19H295" stroke="#a3edf3" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <h2 class="gift-title">Gửi cậu.</h2>
+          <p class="gift-envelope-message">Tớ không giỏi nói mấy lời dễ thương,<br>nên thử làm một điều dễ thương vậy.</p>
+          <button id="gift-open-letter" class="gift-button" type="button" aria-controls="gift-letter-content" aria-expanded="false">Mở thư</button>
+        </div>
+
+        <article id="gift-letter-content" class="gift-letter-content" tabindex="-1" aria-labelledby="gift-letter-title" hidden>
+          <span class="gift-letter-heart" aria-hidden="true">♡</span>
+          <h2 id="gift-letter-title" class="gift-title">Gửi cậu.</h2>
+          <p class="gift-letter-body">Chẳng cần dịp gì đặc biệt cả. Tớ chỉ muốn làm một điều nho nhỏ dành riêng cho cậu. Mong là khi mở món quà này, cậu sẽ vui thêm một chút. Và nếu hôm nay hơi mệt, cứ ở đây chơi một lát nhé.</p>
+          <div class="gift-letter-divider" aria-hidden="true"><span>✦</span></div>
+          <p class="gift-ending">Giữa bao nhiêu người,<br>món quà này chỉ có một người nhận.<br><strong>Là cậu đó.</strong></p>
+          <button id="gift-pocket-button" class="gift-button" type="button">Cất vào túi ♡</button>
+        </article>
+
+        <div id="gift-delivered-view" class="gift-delivered-view" tabindex="-1" hidden>
+          <div class="gift-keepsake" aria-hidden="true"><span>♡</span></div>
+          <p id="gift-delivered-message" class="gift-delivered-message" role="status"></p>
+        </div>
+      </div>
     </section>
 
 
@@ -496,6 +545,7 @@
     </section>
 
     <script src="scripts/story.js"></script>
+    <script src="scripts/gift-letter.js"></script>
     <script src="scripts/sky.js"></script>
 
 <script id="tiny-kado-flower-init" src="scripts/flowers.js"></script>

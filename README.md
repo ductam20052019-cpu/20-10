@@ -2,7 +2,7 @@
 
 
 
-Ảnh, video, nhạc và phông chữ được lưu trong dự án. Trang không cần gọi website gốc hoặc Google Fonts để hoạt động. Nút chia sẻ sao chép địa chỉ của bản đang chạy, thay vì địa chỉ website gốc.
+Ảnh, video, nhạc và phông chữ được lưu trong dự án. Trang không cần gọi website gốc hoặc Google Fonts để hoạt động. Phần kết là một món quà riêng: nạp can đảm, máy bay giao thư, mở lời nhắn và cất quà.
 
 ## Chạy dự án
 
@@ -14,13 +14,24 @@ npm run dev
 
 Máy chủ lắng nghe trên cổng **3000**. Đổi cổng bằng `PORT=8080 npm run dev`. Không cần cài thư viện để chạy trang; không có bước build và không cần khóa API hay cơ sở dữ liệu.
 
-Nhấp hoặc chạm vào nền để chuyển cảnh. Nhạc bắt đầu khi trình duyệt cho phép hoặc sau lần tương tác đầu tiên. Phần mở đầu chờ đủ **9,7 giây nhạc** trước khi cho chuyển sang câu “ui cậu đẹp quá”, giống trang gốc. Ở cuối câu chuyện, bấm **Đồng ý** để sao chép liên kết và cho máy bay cất cánh, rồi chạm nền để mở gian quà tặng.
+Nhấp hoặc chạm vào nền để chuyển cảnh. Nhạc bắt đầu khi trình duyệt cho phép hoặc sau lần tương tác đầu tiên. Phần mở đầu chờ đủ **9,7 giây nhạc** trước khi cho chuyển sang câu “ui cậu đẹp quá”.
+
+Ở cuối câu chuyện:
+
+1. Bấm **Nhận quà 💌**: pin tăng từ 80% lên 100% cùng dòng “Đang nạp thêm một chút can đảm…”.
+2. Máy bay cất cánh, kéo theo “Điểm đến: chỗ cậu ✈️”, rồi giao phong thư.
+3. Bấm **Mở thư** để đọc lời nhắn riêng và phần kết “Là cậu đó.”.
+4. Bấm **Cất vào túi ♡**: hiện “Đã giao tận tay người tớ muốn tặng.”.
+
+Phần kết không yêu cầu sao chép/chia sẻ liên kết và không tự chuyển sang gian hàng. Nút dùng được bằng chuột, chạm, Tab/Enter; chế độ giảm chuyển động vẫn giao thư đầy đủ.
 
 ## Chỉnh sửa
 
 - `index.html`: lời chúc, SVG, sản phẩm, liên kết và ghi công.
 - `styles/site.css`: toàn bộ giao diện, hiệu ứng và bố cục điện thoại.
-- `scripts/story.js`: chuyển cảnh, mắt Tiny, nhạc, lời bài hát, sao chép liên kết.
+- `styles/gift.css`: giao diện hành trình nhận quà và phong thư.
+- `scripts/story.js`: chuyển cảnh, mắt Tiny, nhạc, lời bài hát và chuyến bay giao quà.
+- `scripts/gift-letter.js`: mở phong thư, đọc lời nhắn và cất quà.
 - Các tệp khác trong `scripts/`: hoa, hạt sáng, vườn hoa, gian quà tặng và tối ưu hiệu ứng.
 - `assets/`: ảnh, nhạc, video và phông chữ. Phông Courier Prime kèm giấy phép trong `assets/fonts/OFL.txt`.
 
@@ -35,7 +46,7 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-`npm test` kiểm tra phục vụ trang/tài nguyên, phát từng đoạn âm thanh/video và giới hạn tệp công khai. Kiểm tra trình duyệt đi qua câu chuyện, chia sẻ và hộp thoại sản phẩm ở kích thước máy tính và điện thoại. Nếu máy đã có Chromium hệ thống, dùng `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser` để tránh tải trình duyệt khác.
+`npm test` kiểm tra phục vụ trang/tài nguyên, phát từng đoạn âm thanh/video và giới hạn tệp công khai. Kiểm tra trình duyệt đi qua câu chuyện, pin tăng từ 80% lên 100%, chuyến bay giao thư và kết thúc nhận quà ở kích thước máy tính và điện thoại. Nếu máy đã có Chromium hệ thống, dùng `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser` để tránh tải trình duyệt khác.
 
 ## Đưa lên hosting tĩnh
 

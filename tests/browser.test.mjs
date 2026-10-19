@@ -24,7 +24,7 @@ after(async () => {
 
 for (const mobile of [false, true]) {
   const profile = mobile ? 'mobile' : 'desktop';
-  test(`${profile}: complete story, music, sharing, and gift dialogs`, { timeout: 180_000 }, async () => {
+  test(`${profile}: complete story, music, gift flight, and personal letter`, { timeout: 180_000 }, async () => {
     const context = await browser.newContext(mobile
       ? devices['iPhone 13']
       : { viewport: { width: 1440, height: 900 } });
@@ -35,7 +35,6 @@ for (const mobile of [false, true]) {
     page.on('pageerror', error => errors.push(error.message));
     page.on('requestfailed', request => failedRequests.push(request.url()));
     page.on('response', response => { if (response.status() >= 400) errors.push(`${response.status()} ${response.url()}`); });
-    await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: base });
     // No remote page, font, or media request is required by the copy.
     await page.route('**/*', route => {
       const url = new URL(route.request().url());
@@ -88,34 +87,51 @@ for (const mobile of [false, true]) {
       }
 
       await page.waitForSelector('#share-flight-scene.share-visible', { state: 'attached' });
-      assert.equal(await page.locator('#share-copy-manual').getAttribute('href'), base + '/');
+      assert.equal(await page.locator('#gift-invitation-title').innerText(), 'Có một món quà nhỏ\nđang trên đường đến với cậu.\nCậu nhận giúp tớ nhé?');
+      assert.equal(await page.locator('#share-fuel-meter').textContent(), '80%');
       await page.waitForTimeout(1200);
-      await screenshot('share');
-      await page.locator('#share-fuel-button').click();
-      await page.waitForFunction(() => document.querySelector('.tiny-copy-toast')?.textContent.includes('Đã sao chép'));
-      assert.equal(await page.evaluate(() => navigator.clipboard.readText()), base + '/');
-      await page.waitForSelector('#tiny-reality-scene.reality-visible.reality-cute', { state: 'attached', timeout: 15_000 });
+      await screenshot('gift-invitation');
+      await page.evaluate(() => {
+        window.giftChargeSamples = [80];
+        const meter = document.getElementById('share-fuel-meter');
+        new MutationObserver(() => window.giftChargeSamples.push(Number(meter.getAttribute('aria-valuenow'))))
+          .observe(meter, { attributes: true, attributeFilter: ['aria-valuenow'] });
+      });
+      await page.getByRole('button', { name: 'Nhận quà 💌', exact: true }).click();
+      assert.equal(await page.locator('#share-flight-status').textContent(), 'Đang nạp thêm một chút can đảm…');
+      assert.ok(await page.locator('#share-fuel-button').isDisabled());
+      // Extra background taps must not skip charging or open the old shop scene.
       await tapBackground();
-      await page.waitForSelector('#tiny-shop-scene.shop-visible', { state: 'attached' });
-      await page.waitForTimeout(1800);
-      assert.equal(await page.locator('.shop-product').count(), 9);
-      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-      await screenshot('shop');
+      await page.waitForFunction(() => Number(document.getElementById('share-fuel-meter').getAttribute('aria-valuenow')) > 80);
+      await screenshot('gift-charging');
+      await page.waitForFunction(() => document.getElementById('share-fuel-meter').textContent === '100%');
+      const samples = await page.evaluate(() => window.giftChargeSamples);
+      assert.equal(samples.at(-1), 100);
+      assert.ok(samples.length > 2);
+      assert.ok(samples.every((value, i) => value >= 80 && value <= 100 && (!i || value >= samples[i - 1])));
+      await page.waitForSelector('#share-aircraft-stand.share-takeoff', { state: 'attached' });
+      assert.equal(await page.locator('.gift-flight-banner').textContent(), 'Điểm đến: chỗ cậu ✈️');
+      await screenshot('gift-takeoff');
 
-      for (const gender of ['girls', 'boys']) {
-        const product = page.locator(`.shop-product[data-shop-gender="${gender}"]`).first();
-        const title = await product.getAttribute('data-product-title');
-        const href = await product.getAttribute('href');
-        await product.click();
-        await page.waitForSelector('#shop-product-modal.show', { state: 'attached' });
-        assert.equal(await page.locator('#shop-modal-title').textContent(), title);
-        assert.equal(await page.locator('#shop-modal-buy').getAttribute('href'), href);
-        await page.waitForFunction(() => document.querySelector('#shop-modal-thumb img')?.naturalWidth > 0);
-        await screenshot(`product-${gender}`);
-        if (gender === 'girls') await page.locator('.shop-modal-close').click();
-        else await page.keyboard.press('Escape');
-        assert.equal(await page.locator('#shop-product-modal').getAttribute('aria-hidden'), 'true');
-      }
+      await page.waitForSelector('#gift-letter-scene[data-stage="envelope"]', { state: 'visible', timeout: 10_000 });
+      await page.waitForFunction(() => getComputedStyle(document.getElementById('gift-letter-scene')).opacity === '1');
+      assert.equal(await page.locator('.gift-envelope-message').innerText(), 'Tớ không giỏi nói mấy lời dễ thương,\nnên thử làm một điều dễ thương vậy.');
+      assert.equal(await page.locator('#gift-open-letter').evaluate(button => button === document.activeElement), true);
+      await screenshot('gift-envelope');
+      await page.getByRole('button', { name: 'Mở thư', exact: true }).click();
+      await page.waitForSelector('#gift-letter-content', { state: 'visible' });
+      await page.waitForFunction(() => getComputedStyle(document.getElementById('gift-letter-content')).opacity === '1');
+      assert.equal(await page.locator('.gift-letter-body').textContent(), 'Chẳng cần dịp gì đặc biệt cả. Tớ chỉ muốn làm một điều nho nhỏ dành riêng cho cậu. Mong là khi mở món quà này, cậu sẽ vui thêm một chút. Và nếu hôm nay hơi mệt, cứ ở đây chơi một lát nhé.');
+      assert.equal(await page.locator('.gift-ending').innerText(), 'Giữa bao nhiêu người,\nmón quà này chỉ có một người nhận.\nLà cậu đó.');
+      await screenshot('gift-letter');
+      await page.getByRole('button', { name: 'Cất vào túi ♡', exact: true }).click();
+      assert.equal(await page.locator('#gift-delivered-message').textContent(), 'Đã giao tận tay người tớ muốn tặng.');
+      await tapBackground();
+      assert.equal(await page.locator('#gift-letter-scene').getAttribute('data-stage'), 'delivered');
+      await page.waitForFunction(() => getComputedStyle(document.getElementById('gift-delivered-view')).opacity === '1');
+      assert.equal(await page.locator('#tiny-shop-scene').getAttribute('aria-hidden'), 'true');
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+      await screenshot('gift-delivered');
 
       assert.deepEqual(externalRequests, [], 'copy must work without remote assets');
       assert.deepEqual(failedRequests, [], 'all requested files must load');
@@ -129,3 +145,34 @@ for (const mobile of [false, true]) {
     }
   });
 }
+
+test('reduced motion: letter delivery works with a keyboard on a short screen', { timeout: 20_000 }, async () => {
+  const context = await browser.newContext({ viewport: { width: 320, height: 568 }, reducedMotion: 'reduce' });
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  try {
+    await page.goto(base);
+    // Isolate the finale here; the desktop/mobile cases above cover the full story.
+    await page.evaluate(() => startShareFlightScene());
+    await page.getByRole('button', { name: 'Nhận quà 💌', exact: true }).focus();
+    await page.keyboard.press('Enter');
+    await page.waitForSelector('#gift-letter-scene[data-stage="envelope"]', { state: 'visible' });
+    assert.equal(await page.locator('#share-fuel-meter').textContent(), '100%');
+    assert.equal(await page.evaluate(() => document.activeElement.id), 'gift-open-letter');
+    await page.keyboard.press('Enter');
+    await page.waitForSelector('#gift-letter-content', { state: 'visible' });
+    assert.ok(await page.locator('#gift-letter-scene').evaluate(scene => scene.scrollHeight > scene.clientHeight));
+    await page.screenshot({ path: new URL('../test-results/compact-gift-letter.png', import.meta.url).pathname });
+    await page.keyboard.press('Tab');
+    assert.equal(await page.evaluate(() => document.activeElement.id), 'gift-pocket-button');
+    const button = await page.locator('#gift-pocket-button').boundingBox();
+    assert.ok(button.y >= 0 && button.y + button.height <= 568, 'the pocket button scrolls into view');
+    await page.keyboard.press('Enter');
+    await page.waitForSelector('#gift-delivered-view', { state: 'visible' });
+    assert.equal(await page.locator('#gift-delivered-message').textContent(), 'Đã giao tận tay người tớ muốn tặng.');
+    assert.deepEqual(errors, []);
+  } finally {
+    await context.close();
+  }
+});
